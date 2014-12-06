@@ -1,3 +1,38 @@
+##Android處理點擊
+
+點擊都包裝成MotionEvent，而MotionEvent的動作基本如下
+
+- ACTION_DOWN
+- ACTION_UP
+- ACTION_MOVE
+- ACTION_CANCEL
+
+而MotionEvent通常還附帶以下資訊
+
+- 點擊位置
+- 點擊手指數
+- 點擊時間
+
+而手勢判定是從**ACTION_DOWN**開始，到**ACTION_UP**結束
+
+###點擊事件的生命週期
+
+Activity接收點擊事件，然後派送點擊事件dispatchTouchEvent()。
+
+派送順序由最外層(也就是最頂層)開始往下送，ViewGroup會先收到，將點擊事件派送給所屬的Child View(可能是ViewGroup或者View)，而點擊事件可以在ViewGroup中的onInterceptTouchEvent回傳true進行攔截。
+
+如果沒有任何View處理這個點擊事件的話，將由Activity的onTouchEvent()進行處理。
+
+如果有透過setOnTouchListener設定OnTouchListener，也可以在OnTouchListener.onTouch回傳true進行攔截。
+
+###dispatchTouchEvent() Activity和View處理上的差異
+
+Activity先執行dispatchTouchEvent()，若沒有Child View處理點擊事件的話，最後才會執行onTouchEvent()
+
+View先執行透過setOnTouchListener設定OnTouchListener.onTouch()，如果沒有處理的話，最後會執行View.onTouchEvent()
+
+
+
 ##事件 
 
 onInterceptTouchEvent
