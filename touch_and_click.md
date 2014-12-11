@@ -27,10 +27,13 @@ Activity接收點擊事件，然後派送點擊事件dispatchTouchEvent()。
 
 ###dispatchTouchEvent() Activity和View處理上的差異
 
-Activity先執行dispatchTouchEvent()，若沒有Child View處理點擊事件的話，最後才會執行onTouchEvent()
+Activity先執行dispatchTouchEvent()，若沒有任何View或ViewGroup處理點擊事件的話，最後才會執行onTouchEvent()
 
-View先執行透過setOnTouchListener設定OnTouchListener.onTouch()，如果沒有處理的話，最後會執行View.onTouchEvent()
+View先執行透過setOnTouchListener設定OnTouchListener.onTouch()，如果沒有處理的話，最後才執行View.onTouchEvent()
 
+ViewGroup會先執行onInterceptTouchEvent()判斷是否攔截，如果ACTION_DOWN之後被攔截的話，會派送ACTION_CANCEL給被攔截的View，之後再根據重疊的逆順序執行child.dispatchTouchEvent()，若還是沒有處理，則執行OnTouchListener.onTouch()，若還是沒有處理，最後才執行onTouchEvent()
+
+只要Child View接受了ACTION_DOWN,之後ViewGroup會將後續的事件ACTION_MOVE或ACTION_UP直接派送給他，如果沒有被攔截的話。
 
 
 ##事件 
@@ -126,3 +129,10 @@ focusableInTouchMode是一定要使用者點擊才會觸發state_pressed的狀�
 
 
 ##EditText Enter
+
+
+參考資料
+
+http://cyrilmottier.com/2012/02/16/listview-tips-tricks-5-enlarged-touchable-areas/
+
+http://files.cnblogs.com/sunzn/PRE_andevcon_mastering-the-android-touch-system.pdf
